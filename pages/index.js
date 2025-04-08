@@ -1,7 +1,7 @@
 function Home() {
     return(
         <div>
-            <h1>Pimbinha</h1>
+            <h1>Pimbinha legal demais</h1>
         </div>
     )
 }
