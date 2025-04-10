@@ -35,8 +35,6 @@ async function status(request, response) {
       },
     },
   });
-
-  await database.end();
 }
 
 export default status;
