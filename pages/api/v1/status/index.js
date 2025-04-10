@@ -5,7 +5,7 @@ async function status(request, response) {
 
   let databaseVersionValue = "desconhecido";
   //Feito um regex para pegar somente o valor da version
-  // Já que o 'SHOW server_version;' só retorna undefined
+  // Já que o 'SHOW server_version;' só retorna undefineda
   try {
     const databaseVersionResult = await database.query("SELECT version();");
     const versionText =
