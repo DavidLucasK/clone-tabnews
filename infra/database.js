@@ -10,13 +10,12 @@ async function query(queryObject) {
     version: process.env.POSTGRES_VERSION,
     ssl: process.env.NODE_ENV === "development" ? false : true,
   });
+  await client.connect();
   let result = null;
   try {
-    await client.connect();
     result = await client.query(queryObject);
   } catch (err) {
     console.error(err);
-    throw error;
   } finally {
     await client.end();
     return result;
