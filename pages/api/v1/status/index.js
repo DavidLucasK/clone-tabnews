@@ -2,20 +2,22 @@ import database from "infra/database.js";
 
 async function status(request, response) {
   const updatedAt = new Date().toISOString();
+  let databaseVersionValue = null;
 
-  let databaseVersionValue = "desconhecido";
-  let databaseMaxConnectionsValue = 0;
-  let databaseOpenedConnectionsValue = 0;
-
+  //Try do dataVersionDB
   try {
     const databaseVersionResult = await database.query("SELECT version();");
-    const versionText =
+    const fullVersion =
       databaseVersionResult?.rows?.[0]?.version || "desconhecido";
-    databaseVersionValue = versionText.split(" ")[1] || "desconhecido";
+
+    // Extrai apenas o número da versão, ex: "15.8"
+    const match = fullVersion.match(/PostgreSQL (\d+\.\d+)/);
+    databaseVersionValue = match ? match[1] : "desconhecido";
   } catch (error) {
     console.error("Erro ao obter versão do banco:", error);
   }
 
+  //Try do max_connections
   try {
     const result = await database.query("SHOW max_connections;");
     databaseMaxConnectionsValue = parseInt(
@@ -25,6 +27,7 @@ async function status(request, response) {
     console.error("Erro ao obter max_connections:", error);
   }
 
+  //Try do opened_connections
   try {
     const databaseName = process.env.POSTGRES_DB;
     const result = await database.query({
@@ -51,8 +54,6 @@ async function status(request, response) {
       },
     },
   });
-
-  await database.end();
 }
 
 export default status;
