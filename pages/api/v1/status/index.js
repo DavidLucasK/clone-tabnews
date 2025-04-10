@@ -3,7 +3,7 @@ import database from "infra/database.js";
 async function status(request, response) {
   const updatedAt = new Date().toISOString();
 
-  const databaseVersionValue = null;
+  let databaseVersionValue = "desconhecido";
   //Feito um regex para pegar somente o valor da version
   // Já que o 'SHOW server_version;' só retorna undefined
   try {
