@@ -6,7 +6,7 @@ async function status(request, response) {
   let databaseOpenedConnectionsValue = null;
   let databaseMaxConnectionsValue = null;
 
-  //Try do dataVersionDB
+  //Try do databaseVersionResult
   try {
     const databaseVersionResult = await database.query("SELECT version();");
     const fullVersion =
