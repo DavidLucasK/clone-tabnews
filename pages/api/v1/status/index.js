@@ -4,8 +4,9 @@ async function status(request, response) {
   const updatedAt = new Date().toISOString();
 
   let databaseVersionValue = "desconhecido";
-  //Feito um regex para pegar somente o valor da version
-  // Já que o 'SHOW server_version;' só retorna undefineda
+  let databaseMaxConnectionsValue = 0;
+  let databaseOpenedConnectionsValue = 0;
+
   try {
     const databaseVersionResult = await database.query("SELECT version();");
     const versionText =
@@ -15,29 +16,34 @@ async function status(request, response) {
     console.error("Erro ao obter versão do banco:", error);
   }
 
-  const databaseMaxConnectionsResult = await database.query(
-    "SHOW max_connections;",
-  );
-  const databaseMaxConnectionsValue = parseInt(
-    databaseMaxConnectionsResult?.rows?.[0]?.max_connections,
-  );
+  try {
+    const result = await database.query("SHOW max_connections;");
+    databaseMaxConnectionsValue = parseInt(
+      result?.rows?.[0]?.max_connections || 0,
+    );
+  } catch (error) {
+    console.error("Erro ao obter max_connections:", error);
+  }
 
-  const databaseName = process.env.POSTGRES_DB;
-  const databaseOpenedConnectionsResult = await database.query({
-    text: "SELECT count(*) from pg_stat_activity WHERE datname = $1",
-    values: [databaseName],
-  });
+  try {
+    const databaseName = process.env.POSTGRES_DB;
+    const result = await database.query({
+      text: "SELECT count(*) from pg_stat_activity WHERE datname = $1",
+      values: [databaseName],
+    });
 
-  const databaseOpenedConnectionsValue =
-    databaseOpenedConnectionsResult.rows[0].count;
+    databaseOpenedConnectionsValue = parseInt(result?.rows?.[0]?.count || 0);
+  } catch (error) {
+    console.error("Erro ao contar conexões abertas:", error);
+  }
 
   response.status(200).json({
     updated_at: updatedAt,
     dependencies: {
       database: {
         version: databaseVersionValue,
-        max_connections: parseInt(databaseMaxConnectionsValue),
-        opened_connections: parseInt(databaseOpenedConnectionsValue),
+        max_connections: databaseMaxConnectionsValue,
+        opened_connections: databaseOpenedConnectionsValue,
       },
       webserver: {
         coisa: "nada por aqui ainda",
