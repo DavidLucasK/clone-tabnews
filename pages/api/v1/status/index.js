@@ -3,6 +3,8 @@ import database from "infra/database.js";
 async function status(request, response) {
   const updatedAt = new Date().toISOString();
   let databaseVersionValue = null;
+  let databaseOpenedConnectionsValue = null;
+  let databaseMaxConnectionsValue = null;
 
   //Try do dataVersionDB
   try {
