@@ -8,7 +8,10 @@ async function query(queryObject) {
     database: process.env.POSTGRES_DB,
     password: process.env.POSTGRES_PASSWORD,
     version: process.env.POSTGRES_VERSION,
-    ssl: process.env.NODE_ENV === "development" ? false : true,
+    ssl:
+      process.env.NODE_ENV === "development"
+        ? false
+        : { rejectUnauthorized: false },
   });
   let result = null;
   try {
