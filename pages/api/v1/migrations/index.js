@@ -10,6 +10,8 @@ export default async function migrations(request, response) {
     });
   }
 
+  //Teste
+
   let dbClient;
 
   try {
