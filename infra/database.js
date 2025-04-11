@@ -39,8 +39,15 @@ function getSSLValues() {
   if (process.env.POSTGRES_CA) {
     return {
       ca: process.env.POSTGRES_CA,
+      rejectUnauthorized: true,
     };
   }
 
-  return process.env.NODE_ENV === "production" ? true : false;
+  if (process.env.NODE_ENV === "production") {
+    return {
+      rejectUnauthorized: false, // permite certificados autoassinados
+    };
+  }
+
+  return false;
 }
