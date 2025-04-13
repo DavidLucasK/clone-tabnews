@@ -26,7 +26,7 @@ function checkPostgres() {
 
   function handleReturn(error, stdout) {
     if (stdout.search("accepting connections") === -1) {
-      setTimeout(checkPostgres, 500); // Tenta novamente em 500ms
+      setTimeout(checkPostgres, 500); // Tenta de novo a cada meio segundo
       return;
     }
 
