@@ -46,6 +46,7 @@ async function status(request, response) {
     updated_at: updatedAt,
     dependencies: {
       database: {
+        name: databaseName,
         version: databaseVersionValue,
         max_connections: databaseMaxConnectionsValue,
         opened_connections: databaseOpenedConnectionsValue,
