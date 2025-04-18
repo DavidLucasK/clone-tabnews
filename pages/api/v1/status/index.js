@@ -45,7 +45,8 @@ async function status(request, response) {
   }
 
   try {
-    databaseUserName = await database.query("SELECT current_user;");
+    const databaseUserResult = await database.query("SELECT current_user;");
+    databaseUserName = databaseUserResult.rows[0].current_user;
   } catch (error) {
     console.error("Erro ao pegar nome de usuário do banco:", error);
   }
