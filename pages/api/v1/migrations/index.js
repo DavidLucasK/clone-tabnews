@@ -15,10 +15,14 @@ export default async function migrations(request, response) {
   try {
     dbClient = await database.getNewClient();
 
+    const migrationsDir =
+      process.env.NODE_ENV === "production"
+        ? resolve("infra", "migrations")
+        : join("infra", "migrations");
     const defaultMigrationOptions = {
       dbClient: dbClient,
       dryRun: true,
-      dir: join("infra", "migrations"),
+      dir: migrationsDir,
       direction: "up",
       verbose: true,
       migrationsTable: "pgmigrations",
