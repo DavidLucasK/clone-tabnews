@@ -3,6 +3,7 @@ import database from "infra/database.js";
 async function status(request, response) {
   const updatedAt = new Date().toISOString();
   let databaseName = null;
+  let databaseUserName = null;
   let databaseVersionValue = null;
   let databaseOpenedConnectionsValue = null;
   let databaseMaxConnectionsValue = null;
@@ -43,11 +44,17 @@ async function status(request, response) {
     console.error("Erro ao contar conexões abertas:", error);
   }
 
+  try {
+    databaseUserName = await database.query("SELECT current_user();");
+  } catch (error) {
+    console.error("Erro ao pegar nome de usuário do banco:", error);
+  }
+
   response.status(200).json({
     updated_at: updatedAt,
     dependencies: {
       database: {
-        name: databaseName,
+        username: databaseUserName,
         version: databaseVersionValue,
         max_connections: databaseMaxConnectionsValue,
         opened_connections: databaseOpenedConnectionsValue,
