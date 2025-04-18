@@ -2,6 +2,7 @@ import database from "infra/database.js";
 
 async function status(request, response) {
   const updatedAt = new Date().toISOString();
+  let databaseName = null;
   let databaseVersionValue = null;
   let databaseOpenedConnectionsValue = null;
   let databaseMaxConnectionsValue = null;
@@ -31,7 +32,7 @@ async function status(request, response) {
 
   //Try do opened_connections
   try {
-    const databaseName = process.env.POSTGRES_DB;
+    databaseName = process.env.POSTGRES_DB;
     const result = await database.query({
       text: "SELECT count(*) from pg_stat_activity WHERE datname = $1",
       values: [databaseName],
@@ -52,7 +53,7 @@ async function status(request, response) {
         opened_connections: databaseOpenedConnectionsValue,
       },
       webserver: {
-        coisa: "nada por aqui ainda1",
+        coisa: "nada por aqui ainda",
         coisa2: "nada por aqui ainda2",
       },
     },
